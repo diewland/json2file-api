@@ -2,10 +2,39 @@ data from api -> <span id='out'></span>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-  $.ajax('api.php', {
-    success: r => {
-      console.log(r);
+
+  let api = "api.php?filename=data.json";
+
+  // read & write functions
+
+  function read_data(api, callback) {
+    $.ajax(api, { success: callback });
+  }
+  function write_data(api, data, callback) {
+    $.ajax({
+      type: "POST",
+      url: api,
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: callback,
+    });
+  }
+
+  // main
+
+  let data = {
+    os: 'android',
+    company: 'google',
+    version: 7.1,
+  };
+
+  console.log(`write data.. <- ${JSON.stringify(data)}`);
+  write_data(api, data, r => {
+    read_data(api, r => {
+      console.log(`read data.. -> ${JSON.stringify(r)}`);
       $('#out').text(JSON.stringify(r));
-    },
-  });
+    })
+  })
+
 </script>
